@@ -15,6 +15,10 @@ var allClients map[*Client]int
 type Client struct {
     // incoming chan string
     nickname    string
+	username	string
+	hostname	string
+	servername	string
+	realname	string
     outgoing   chan string
     reader     *bufio.Reader
     writer     *bufio.Writer
@@ -33,20 +37,44 @@ func (client *Client) Read() {
 			if ( trim == ""){
 				fmt.Fprintf(client.conn, ":" + hostname + " 421 <> :Unknown command\n")
 				return}
-			arg := strings.Fields(line)
-
-			if (len(arg) >= 2){ //if a two word command was sent to server
-				if (arg[0] == "NICK"){ //if first word is NICK
-					if (client.nickname == "*"){
-						client.nickname = arg[1]
-						fmt.Fprintf(client.conn, ":" + hostname + " 001 " + client.nickname + " :Welcome to ft-irc-go " + client.nickname + "\n")
-					} else {
-						client.nickname = arg[1]
-						fmt.Fprintf(client.conn, ":" + hostname + " NOTICE " + client.nickname + " :Your nickname is now " + client.nickname + "\n")
+			words := strings.Fields(line)
+			if (words[0] == "NICK"){ //if first word is NICK
+				if words[1] == ""{ //ERR_NONICKNAMEGIVEN             = "431"
+					fmt.Fprintf(client.conn, ":" + hostname + " 431 " + client.nickname + " :No Nick Name Given\n")
+					break
+				}
+				for clientList, _ := range allClients { //// IMPORTANT - BUGGY - NEEDS TO BE FIXED
+					if clientList.nickname == words[1]{   //ERR_NICKNAMEINUSE               = "433"
+					fmt.Println("we have two duplicate nicknames!!!")
+					fmt.Fprintf(client.conn, ":" + hostname + " 433 " + client.nickname + " :Nickname is already registered\n")
+					break
 					}
 				}
+				if (client.nickname == "*"){
+						client.nickname = words[1]
+					fmt.Fprintf(client.conn, ":" + hostname + " 001 " + client.nickname + " :Welcome to ft-irc-go " + client.nickname + "\n")
+				} else {
+					client.nickname = words[1]
+					fmt.Fprintf(client.conn, ":" + hostname + " NOTICE " + client.nickname + " :Your nickname is now " + client.nickname + "\n")
+				}
 			}
-
+			if (words[0] == "PING") {
+				if (words[1] != ""){
+					fmt.Fprintf(client.conn, ":" + hostname + " PONG " + hostname + ":" + words[1] + "\n") 
+				}
+			}
+			if (words[0] == "USER") {
+				if ( len(words) < 5){ //ERR_NEEDMOREPARAMS
+					fmt.Fprintf(client.conn, ":" + hostname + " 461 " + client.nickname + " :Not enough parameters\n")
+				} else if (client.username != ""){ //ERR_ALREADYREGISTRED
+					fmt.Fprintf(client.conn, ":" + hostname + " 462 " + client.nickname + " :You may not reregister\n")
+					} else {
+					client.username = words[1]
+					client.hostname = words[2]
+					client.servername = words[3]
+					client.realname = words[4][1:]
+					}
+			}
 			fmt.Println(client.nickname + " said: " + trim)
 			if (trim == "CAP LS 302"){
 				fmt.Fprintf(client.conn, ":" + hostname + " CAP " + client.nickname + " LS :account-notify extended-join identify-msg multi-prefix sasl\n")
@@ -59,17 +87,12 @@ func (client *Client) Read() {
 			} else if (trim == "CAP REQ userhost-in-names"){
 				fmt.Fprintf(client.conn, ":" + hostname + " CAP " + client.nickname + " ACK :userhost-in-names\n")
 			} else {
-
-				fmt.Fprintf(client.conn, ":" + hostname + " 421 <" + arg[0] + "> :Unknown command\n")
+				fmt.Fprintf(client.conn, ":" + hostname + " 421 <" + words[0] + "> :Unknown command\n")
 			}
-
- 
 		} else {
             break
         }
-
     }
-
     client.conn.Close()
     delete(allClients, client)
     if client.connection != nil {
@@ -97,6 +120,10 @@ func NewClient(connection net.Conn) *Client {
 
     client := &Client{
 		nickname: "*",
+		username: "",
+		hostname: "",
+		servername: "",
+		realname: "",
         outgoing: make(chan string),
         conn:     connection,
         reader:   reader,
