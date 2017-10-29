@@ -28,14 +28,17 @@ type Channel struct {
 	chan_clients map[string]*ConnectedClient
 }
 
-// key is a nickname
 var clients map[string]*ConnectedClient
 var channels map[string]*Channel
 
 
 func (client *ConnectedClient) respond_channel(msg string, channel_name string, person *ConnectedClient) {
-	//fmt.Printf(":%s!~%s@%s PRIVMSG %s %s\n", client.nickname, client.username, client.hostname, channel_name, msg)
 	fmt.Fprintf(person.conn, ":%s!~%s@%s PRIVMSG %s %s\n", client.nickname, client.username, client.hostname, channel_name, msg)
+}
+
+func (client *ConnectedClient) respond_peer(msg string, peer *ConnectedClient) {
+	fmt.Fprintf(peer.conn, ":%s!~%s@%s PRIVMSG %s %s\n", client.nickname, client.username, client.hostname, peer.username, msg)
+	client.msg_cnt = client.msg_cnt + 1
 }
 
 func (client *ConnectedClient) respond(msg string) {
@@ -100,7 +103,7 @@ func (client *ConnectedClient) privmsg_command(nickname string, text string) {
 	}
 	receiver_client, ok := clients[nickname]
 	if ok {
-		receiver_client.respond(text)
+		client.respond_peer(text, receiver_client)
 	} else {
 		fmt.Printf("here\n")
 		client.error(ERR_NOSUCHNICK, nickname)
@@ -120,7 +123,6 @@ func (client *ConnectedClient) msg_to_channel(channel_name string, text string) 
 			if person.username != client.username {
 				fmt.Printf("client:{%s}, person{%s}", client.nickname, person.nickname)
 				client.respond_channel(text, channel_name, person)
-				//client.privmsg_channel(person, text, channel_name)
 			}
 		}
 	} else {
