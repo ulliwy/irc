@@ -15,6 +15,8 @@ type ConnectedClient struct {
 	username string
 	nickname string
 	realname string
+	hostname string
+	servername string
 	registered bool
 
 	msg_cnt int
@@ -50,9 +52,11 @@ func (client *ConnectedClient) unregister() {
 	}
 }
 
-func (client *ConnectedClient) user_command(username string, realname string) {
+func (client *ConnectedClient) user_command(username string, hostname string, servername string, realname string) {
 	client.username = username
 	client.realname = realname
+	client.hostname = hostname
+	client.servername = servername
 	client.register()
 }
 
@@ -93,15 +97,36 @@ func (client *ConnectedClient) privmsg_command(nickname string, text string) {
 func (client *ConnectedClient) handle_command(cmd string) {
 	args := strings.Split(cmd, " ")
 
-	fisrt_cmd := args[0]
+	fisrt_cmd := ""
+	len := len(args)
+	if len > 0 {
+		fisrt_cmd = strings.ToUpper(args[0])
+	}
 	if fisrt_cmd == "USER" {
-		client.user_command(args[1], args[4])
+		if len >= 5 {
+			rname := ""
+			for i := 4; i < len; i++ {
+				rname += args[i]
+				rname += " "
+			}
+			rname = strings.TrimSuffix(rname, " ")
+			rname = strings.TrimPrefix(rname, ":")
+			client.user_command(args[1], args[2], args[3], rname)
+		}
 	} else if fisrt_cmd == "NICK" {
-		client.nick_command(args[1])
+		if len >= 1 {
+			client.nick_command(args[1])
+		}
 	} else if fisrt_cmd == "PRIVMSG" {
-		//var receivers []string
-		//receivers = append(receivers, args[1])
-		client.privmsg_command(args[1], args[2])
+		if len >= 3 {
+			msg := ""
+			for i := 2; i < len; i++ {
+				msg += args[i]
+				msg += " "
+			}
+			fmt.Printf("msg: {%s}\n", msg)
+			client.privmsg_command(args[1], strings.TrimSuffix(msg, " "))
+		}
 	} else {
 		if (client.registered) {
 			client.error(ERR_UNKNOWNCOMMAND)
@@ -130,8 +155,9 @@ func handle_conn(conn net.Conn) {
 		}
 
 		fmt.Print(msg)
-		client.handle_command(strings.TrimSuffix(msg, "\n"))
-		client.handle_command(strings.TrimSuffix(msg, "\r\n"))
+		msg = strings.TrimSuffix(msg, "\r\n")
+		msg = strings.TrimSuffix(msg, "\n")
+		client.handle_command(msg)
 	}
 
 	client.unregister()
