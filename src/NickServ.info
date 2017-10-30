@@ -1,0 +1,94 @@
+[16:35:44] -NickServ-	***** NickServ Help *****
+[16:35:44] -NickServ-	Help for REGISTER:
+[16:35:44] -NickServ-	 
+[16:35:44] -NickServ-	This will register your current nickname with NickServ.
+[16:35:44] -NickServ-	This will allow you to assert some form of identity on
+[16:35:44] -NickServ-	the network and to be added to access lists. Furthermore,
+[16:35:44] -NickServ-	NickServ will warn users using your nick without
+[16:35:44] -NickServ-	identifying and allow you to kill ghosts.
+[16:35:44] -NickServ-	The password is a case-sensitive password that you make
+[16:35:44] -NickServ-	up. Please write down or memorize your password! You
+[16:35:44] -NickServ-	will need it later to change settings.
+[16:35:44] -NickServ-	 
+[16:35:44] -NickServ-	You have to confirm the email address. To do this,
+[16:35:44] -NickServ-	follow the instructions in the message sent to the email
+[16:35:44] -NickServ-	address.
+[16:35:44] -NickServ-	 
+[16:35:44] -NickServ-	Syntax: REGISTER <password> <email-address>
+[16:35:45] -NickServ-	 
+[16:35:45] -NickServ-	Examples:
+[16:35:45] -NickServ-	    /msg NickServ REGISTER bar foo@bar.com
+[16:35:45] -NickServ-	***** End of Help *****
+
+[16:36:07] -NickServ-	***** NickServ Help *****
+[16:36:07] -NickServ-	Help for IDENTIFY:
+[16:36:07] -NickServ-	 
+[16:36:07] -NickServ-	IDENTIFY identifies you with services so that you
+[16:36:07] -NickServ-	can perform general maintenance and commands that
+[16:36:07] -NickServ-	require you to be logged in.
+[16:36:07] -NickServ-	 
+[16:36:07] -NickServ-	Syntax: IDENTIFY <password>
+[16:36:07] -NickServ-	 
+[16:36:07] -NickServ-	You can also identify for another nick than you
+[16:36:07] -NickServ-	are currently using.
+[16:36:07] -NickServ-	 
+[16:36:07] -NickServ-	Syntax: IDENTIFY <nick> <password>
+[16:36:07] -NickServ-	 
+[16:36:07] -NickServ-	Example:
+[16:36:07] -NickServ-	    /msg NickServ IDENTIFY foo
+[16:36:07] -NickServ-	    /msg NickServ IDENTIFY jilles foo
+[16:36:07] -NickServ-	***** End of Help *****
+
+[16:36:16] -NickServ-	***** NickServ Help *****
+[16:36:16] -NickServ-	Help for GROUP:
+[16:36:16] -NickServ-	 
+[16:36:16] -NickServ-	GROUP registers your current nickname to your account.
+[16:36:16] -NickServ-	This means that NickServ protects this nickname the
+[16:36:16] -NickServ-	same way as it protects your account name. Most
+[16:36:16] -NickServ-	services commands will accept the new nickname as
+[16:36:16] -NickServ-	an alias for your account name.
+[16:36:16] -NickServ-	 
+[16:36:16] -NickServ-	Please note that grouped nicks expire separately
+[16:36:16] -NickServ-	from accounts. To prevent this, you must use them.
+[16:36:16] -NickServ-	Otherwise, all properties of the account are shared
+[16:36:16] -NickServ-	among all nicks registered to it.
+[16:36:16] -NickServ-	 
+[16:36:16] -NickServ-	Syntax: GROUP
+[16:36:16] -NickServ-	 
+[16:36:16] -NickServ-	Examples:
+[16:36:16] -NickServ-	    /msg NickServ IDENTIFY OldNick SecretPassword
+[16:36:16] -NickServ-	    /msg NickServ GROUP
+[16:36:16] -NickServ-	***** End of Help *****
+
+
+[16:36:21] -NickServ-	***** NickServ Help *****
+[16:36:21] -NickServ-	Help for UNGROUP:
+[16:36:21] -NickServ-	 
+[16:36:21] -NickServ-	UNGROUP unregisters the given nickname from your
+[16:36:21] -NickServ-	account. The nickname will be available for others to
+[16:36:21] -NickServ-	register. This will not affect your channel access
+[16:36:21] -NickServ-	or memos.
+[16:36:21] -NickServ-	 
+[16:36:21] -NickServ-	If you do not specify a nickname, your current
+[16:36:21] -NickServ-	nickname will be ungrouped. You cannot ungroup
+[16:36:21] -NickServ-	your account name.
+[16:36:21] -NickServ-	 
+[16:36:21] -NickServ-	Syntax: UNGROUP [nickname]
+[16:36:21] -NickServ-	 
+[16:36:22] -NickServ-	Examples:
+[16:36:22] -NickServ-	    /msg NickServ UNGROUP SomeNick
+[16:36:22] -NickServ-	***** End of Help *****
+
+[16:37:39] -NickServ-	***** NickServ Help *****
+[16:37:39] -NickServ-	Help for SET PASSWORD:
+[16:37:39] -NickServ-	 
+[16:37:40] -NickServ-	SET PASSWORD changes the password of an account.
+[16:37:40] -NickServ-	 
+[16:37:40] -NickServ-	Syntax: SET PASSWORD <new password>
+[16:37:40] -NickServ-	 
+[16:37:40] -NickServ-	Example:
+[16:37:40] -NickServ-	    /msg NickServ SET PASSWORD swordfish
+[16:37:40] -NickServ-	***** End of Help *****
+
+
+
